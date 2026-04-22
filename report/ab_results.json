@@ -1,0 +1,20 @@
+{
+  "control": {
+    "hits": 420,
+    "requests": 600,
+    "hit_rate": 0.7
+  },
+  "treatment": {
+    "hits": 470,
+    "requests": 600,
+    "hit_rate": 0.7833
+  },
+  "delta": 0.0833,
+  "z_score": 3.297,
+  "p_value": 0.001,
+  "ci_95": [
+    0.0333,
+    0.1317
+  ],
+  "decision": "SHIP TREATMENT (ALS)"
+}

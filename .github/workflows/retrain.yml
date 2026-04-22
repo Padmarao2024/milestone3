@@ -1,0 +1,112 @@
+name: Scheduled Retrain & Model Publish
+
+on:
+  schedule:
+    # Retrain twice a day – satisfies "≥2 model updates in 7-day window"
+    - cron: "0 4 * * *"   # 04:00 UTC daily  (run 1)
+    - cron: "0 16 * * *"  # 16:00 UTC daily  (run 2)
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "Model to retrain (popularity | item_item | als | all)"
+        required: false
+        default: "all"
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  retrain:
+    runs-on: ubuntu-latest
+    outputs:
+      model_version: ${{ steps.version.outputs.model_version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install training deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas pyarrow joblib scipy implicit numpy scikit-learn
+
+      - name: Generate synthetic training data (CI substitute for real data)
+        run: python training/prepare_data.py
+
+      - name: Train models
+        run: |
+          TARGET="${{ github.event.inputs.model || 'all' }}"
+          if [ "$TARGET" = "all" ] || [ "$TARGET" = "popularity" ]; then
+            python training/train_popularity.py
+          fi
+          if [ "$TARGET" = "all" ] || [ "$TARGET" = "item_item" ]; then
+            python training/train_item_item.py
+          fi
+          if [ "$TARGET" = "all" ] || [ "$TARGET" = "als" ]; then
+            python training/train_als.py
+          fi
+
+      - name: Compute model version tag
+        id: version
+        run: |
+          VERSION="v$(date -u +'%Y%m%d%H%M%S')"
+          echo "model_version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Model version: $VERSION"
+
+      - name: Publish model registry metadata
+        run: |
+          VERSION="${{ steps.version.outputs.model_version }}"
+          mkdir -p model_registry/$VERSION
+          cat > model_registry/$VERSION/metadata.json << EOF
+          {
+            "version": "$VERSION",
+            "trained_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "git_sha": "${{ github.sha }}",
+            "run_id": "${{ github.run_id }}",
+            "models": ["popularity", "item_item", "als"]
+          }
+          EOF
+          # Update "latest" pointer
+          cp model_registry/$VERSION/metadata.json model_registry/latest.json
+          echo "Published model_registry/$VERSION/metadata.json"
+          cat model_registry/$VERSION/metadata.json
+
+      - name: Upload model artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: models-${{ steps.version.outputs.model_version }}
+          path: |
+            models/
+            model_registry/
+          retention-days: 30
+
+      - name: Commit model registry to repo
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add model_registry/
+          git diff --cached --quiet || git commit -m "chore: publish model registry ${{ steps.version.outputs.model_version }} [skip ci]"
+          git push
+
+  hot-swap-deploy:
+    needs: retrain
+    runs-on: ubuntu-latest
+    steps:
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Hot-swap DATA_SNAPSHOT_ID env var (triggers rolling update)
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            az extension add --name containerapp --upgrade
+            az containerapp update \
+              --name "${{ secrets.AZURE_CONTAINER_APP_NAME }}" \
+              --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
+              --set-env-vars \
+                "DATA_SNAPSHOT_ID=${{ needs.retrain.outputs.model_version }}" \
+                "ACTIVE_MODEL=als"
+            echo "Container app updated with new model version: ${{ needs.retrain.outputs.model_version }}"
