@@ -118,21 +118,22 @@ Drift report (`report/drift_report.csv`), comparing early vs late interaction wi
 
 Workflow files:
 
-- `.github/workflows/ci-cd.yml`: lint, tests, coverage, Docker build/push, Cloud Run deploy on `main`.
+- `.github/workflows/ci-cd.yml`: lint, tests, coverage, Docker build/push, Azure Container Apps deploy on `main`.
 - `.github/workflows/probe.yml`: scheduled probe publisher.
 
 Secrets strategy:
 
 - Docker Hub: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`
-- Cloud Run: `GCP_WORKLOAD_IDENTITY_PROVIDER`, `GCP_SERVICE_ACCOUNT`, `CLOUD_RUN_SERVICE`, `CLOUD_RUN_REGION`
+- Azure Container Apps: `AZURE_CREDENTIALS`, `AZURE_CONTAINER_APP_NAME`, `AZURE_RESOURCE_GROUP`
 - Kafka/API probe secrets remain in `probe.yml`
 
 Successful runs link:
 
 - Repository URL: https://github.com/Padmarao2024/milestone3
-- Latest CI/CD run URL: https://github.com/Padmarao2024/milestone3/actions/runs/24756486381
-- Current run status: `test-and-quality` passed; `build-and-push` failed at Docker login with `Username and password required`.
-- What is still needed to fully satisfy CI/CD evidence: add repository secrets `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, `GCP_WORKLOAD_IDENTITY_PROVIDER`, `GCP_SERVICE_ACCOUNT`, `CLOUD_RUN_SERVICE`, and `CLOUD_RUN_REGION`, then rerun CI/CD and attach the successful run URL.
+- Latest successful CI/CD run URL: https://github.com/Padmarao2024/milestone3/actions/runs/24795362593
+- Current run status: `test-and-quality`, `build-and-push`, and `deploy-azure-container-apps` all passed.
+- Deployment status: Azure Container App `recommender-api` is running in resource group `milestones-rg` and serving `GET /health` with HTTP 200.
+- Secrets configured and validated in Actions: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, `AZURE_CREDENTIALS`, `AZURE_CONTAINER_APP_NAME`, and `AZURE_RESOURCE_GROUP`.
 
 Test report:
 
