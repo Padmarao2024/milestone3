@@ -77,3 +77,23 @@ jobs:
               --name "${{ secrets.AZURE_CONTAINER_APP_NAME }}" \
               --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
               --image "${{ needs.build-and-push.outputs.image_ref }}"
+      - name: Write deployment summary
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            FQDN=$(az containerapp show \
+              --name "${{ secrets.AZURE_CONTAINER_APP_NAME }}" \
+              --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
+              --query "properties.configuration.ingress.fqdn" -o tsv)
+            IMAGE=$(az containerapp show \
+              --name "${{ secrets.AZURE_CONTAINER_APP_NAME }}" \
+              --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
+              --query "properties.template.containers[0].image" -o tsv)
+
+            {
+              echo "## Deployment Status"
+              echo ""
+              echo "- URL: https://${FQDN}"
+              echo "- Image: ${IMAGE}"
+              echo "- Image digest/source: ${{ needs.build-and-push.outputs.image_ref }}"
+            } >> "$GITHUB_STEP_SUMMARY"
