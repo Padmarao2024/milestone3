@@ -129,9 +129,10 @@ Secrets strategy:
 
 Successful runs link:
 
-- Current status: no successful GitHub Actions run link is available because this repository is not hosted on GitHub.
-- What is implemented: `.github/workflows/ci-cd.yml` defines lint, tests, scoped coverage, Docker build/push, and Cloud Run deploy for `main` pushes.
-- What is still needed to fully satisfy the CI/CD evidence deliverable: either host the repo on GitHub and attach a successful Actions run URL, or run the same pipeline in another CI system and include that run link or screenshot instead.
+- Repository URL: https://github.com/Padmarao2024/milestone3
+- Latest CI/CD run URL: https://github.com/Padmarao2024/milestone3/actions/runs/24756486381
+- Current run status: `test-and-quality` passed; `build-and-push` failed at Docker login with `Username and password required`.
+- What is still needed to fully satisfy CI/CD evidence: add repository secrets `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, `GCP_WORKLOAD_IDENTITY_PROVIDER`, `GCP_SERVICE_ACCOUNT`, `CLOUD_RUN_SERVICE`, and `CLOUD_RUN_REGION`, then rerun CI/CD and attach the successful run URL.
 
 Test report:
 
