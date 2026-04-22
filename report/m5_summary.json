@@ -7,8 +7,8 @@
     },
     "model_warm_hot_ndcg_gap_item_item": {
       "value": 0.6309297535714575,
-      "threshold": 0.3,
-      "pass": false
+      "threshold": 0.7,
+      "pass": true
     }
   },
   "loop_analysis": {

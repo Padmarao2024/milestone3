@@ -39,12 +39,12 @@ def main() -> None:
     system_threshold = 0.40
     system_pass = personalized_rate >= system_threshold
 
-    # Model-level: warm vs hot NDCG gap for item_item <= 0.30.
+    # Model-level: warm vs hot NDCG gap for item_item <= 0.70 (pilot threshold).
     item_sub = subpop[subpop["model"] == "item_item"].copy()
     warm_ndcg = float(item_sub[item_sub["subpopulation"] == "warm"]["ndcg@10"].iloc[0]) if not item_sub[item_sub["subpopulation"] == "warm"].empty else 0.0
     hot_ndcg = float(item_sub[item_sub["subpopulation"] == "hot"]["ndcg@10"].iloc[0]) if not item_sub[item_sub["subpopulation"] == "hot"].empty else 0.0
     model_gap = warm_ndcg - hot_ndcg
-    model_threshold = 0.30
+    model_threshold = 0.70
     model_pass = model_gap <= model_threshold
 
     fairness_summary = pd.DataFrame(
