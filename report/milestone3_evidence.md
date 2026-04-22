@@ -130,7 +130,7 @@ Secrets strategy:
 Successful runs link:
 
 - Repository URL: https://github.com/Padmarao2024/milestone3
-- Latest successful CI/CD run URL: https://github.com/Padmarao2024/milestone3/actions/runs/24795362593
+- Latest successful CI/CD run URL: https://github.com/Padmarao2024/milestone3/actions/runs/24795929105
 - Current run status: `test-and-quality`, `build-and-push`, and `deploy-azure-container-apps` all passed.
 - Deployment status: Azure Container App `recommender-api` is running in resource group `milestones-rg` and serving `GET /health` with HTTP 200.
 - Secrets configured and validated in Actions: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, `AZURE_CREDENTIALS`, `AZURE_CONTAINER_APP_NAME`, and `AZURE_RESOURCE_GROUP`.
