@@ -24,8 +24,9 @@ PROJECT_BOARD = "https://github.com/users/Padmarao2024/projects"
 REPORT_DIR = Path(__file__).parent
 SCREEN_DIR = REPORT_DIR / "screenshots"
 SCREEN_DIR.mkdir(parents=True, exist_ok=True)
-OUT_PDF = REPORT_DIR / "PadmaraoTeam_M1_Report.pdf"
+OUT_PDF = REPORT_DIR / "PadmaraoPulicharla_M1_Report.pdf"
 DIAGRAM = SCREEN_DIR / "m1_architecture.png"
+TEAM_MEMBER = "Padmarao Pulicharla"
 
 
 def make_diagram() -> None:
@@ -111,7 +112,7 @@ def build_pdf() -> None:
     )
 
     story = [
-        Paragraph("Padmarao Team - Milestone 1: Team Contract and Technical Proposal", h1),
+        Paragraph("Padmarao Pulicharla - Milestone 1: Team Contract and Technical Proposal", h1),
         Paragraph(f"Repo: <link href='{REPO}'>{REPO}</link>", small),
         Paragraph(f"Actions: <link href='{ACTIONS}'>{ACTIONS}</link> | Registry: <link href='{DOCKER}'>{DOCKER}</link> | Cloud URL: <link href='{CLOUD}'>{CLOUD}</link>", small),
         hr,
@@ -119,16 +120,16 @@ def build_pdf() -> None:
         Paragraph("Team members and skills", body),
         tbl([
             ["Member", "Bio", "Skills"],
-            ["Madhusudhan Poduturu", "MS student building production-style recommender pipelines", "Python, FastAPI, Kafka, Azure, CI/CD, MLOps"],
+            [TEAM_MEMBER, "Solo project owner building production-style recommender pipelines", "Python, FastAPI, Kafka, Azure, CI/CD, MLOps"],
         ], [1.5 * inch, 2.4 * inch, 2.3 * inch]),
         Spacer(1, 4),
         Paragraph("Roles and backups", body),
         tbl([
             ["Role", "Primary", "Backup"],
-            ["PM / Technical Lead", "Madhusudhan", "Madhusudhan"],
-            ["ML Lead", "Madhusudhan", "Madhusudhan"],
-            ["Data/Streaming Lead", "Madhusudhan", "Madhusudhan"],
-            ["DevOps/Cloud Lead", "Madhusudhan", "Madhusudhan"],
+            ["PM / Technical Lead", TEAM_MEMBER, TEAM_MEMBER],
+            ["ML Lead", TEAM_MEMBER, TEAM_MEMBER],
+            ["Data/Streaming Lead", TEAM_MEMBER, TEAM_MEMBER],
+            ["DevOps/Cloud Lead", TEAM_MEMBER, TEAM_MEMBER],
         ], [2.2 * inch, 1.8 * inch, 1.8 * inch]),
         Spacer(1, 4),
         Paragraph("Communication, cadence, expectations, and decisions", body),
@@ -160,11 +161,11 @@ def build_pdf() -> None:
         Paragraph("Milestone Gantt with owners", body),
         tbl([
             ["Milestone", "Owner", "Window", "Output"],
-            ["M1", "Madhusudhan", "Week 1", "Contract + architecture + repo skeleton"],
-            ["M2", "Madhusudhan", "Week 2", "Data ingestion + baseline models + eval"],
-            ["M3", "Madhusudhan", "Week 3", "CI/CD + cloud deployment + evidence"],
-            ["M4", "Madhusudhan", "Week 4", "Monitoring + retrain + A/B + provenance"],
-            ["M5", "Madhusudhan", "Week 5", "Responsible ML analysis + reflection"],
+            ["M1", TEAM_MEMBER, "Week 1", "Contract + architecture + repo skeleton"],
+            ["M2", TEAM_MEMBER, "Week 2", "Data ingestion + baseline models + eval"],
+            ["M3", TEAM_MEMBER, "Week 3", "CI/CD + cloud deployment + evidence"],
+            ["M4", TEAM_MEMBER, "Week 4", "Monitoring + retrain + A/B + provenance"],
+            ["M5", TEAM_MEMBER, "Week 5", "Responsible ML analysis + reflection"],
         ], [0.8 * inch, 1.3 * inch, 1.1 * inch, 3.0 * inch]),
         PageBreak(),
         Paragraph("3) Risks, Repo Hygiene, and CI/CD Minimum", h2),
