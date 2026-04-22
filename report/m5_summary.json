@@ -1,0 +1,25 @@
+{
+  "fairness": {
+    "system_personalized_rate": {
+      "value": 0.5,
+      "threshold": 0.4,
+      "pass": true
+    },
+    "model_warm_hot_ndcg_gap_item_item": {
+      "value": 0.6309297535714575,
+      "threshold": 0.3,
+      "pass": false
+    }
+  },
+  "loop_analysis": {
+    "item_distribution_tvd": 0.4464285714285714,
+    "threshold": 0.2,
+    "detected": true
+  },
+  "security_analysis": {
+    "max_user_share": 0.4,
+    "threshold": 0.15,
+    "detected": true,
+    "suspicious_users": 3
+  }
+}
