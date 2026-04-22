@@ -1,0 +1,110 @@
+from __future__ import annotations
+
+from pathlib import Path
+
+import joblib
+import pandas as pd
+
+
+def load_pickle(path: str | Path):
+    return joblib.load(path)
+
+
+def recommend_popularity(pop_model: dict, seen_items: set[str], k: int) -> list[str]:
+    return [item for item in pop_model["top_items"] if item not in seen_items][:k]
+
+
+def recommend_item_item(item_model: dict, user_items: list[str], k: int) -> list[str]:
+    similarity = item_model["similarity"]
+    seen = set(user_items)
+    scores: dict[str, float] = {}
+    for item in user_items:
+        if item not in similarity.index:
+            continue
+        for rec_item, score in similarity.loc[item].items():
+            if rec_item in seen:
+                continue
+            scores[rec_item] = scores.get(rec_item, 0.0) + float(score)
+    ranked = sorted(scores.items(), key=lambda value: value[1], reverse=True)
+    return [item for item, _ in ranked[:k]]
+
+
+def recommend_als(als_model: dict, user_id: str, user_items: list[str], k: int) -> list[str]:
+    if user_id not in als_model["user_to_idx"]:
+        return []
+    user_idx = als_model["user_to_idx"][user_id]
+    try:
+        recs, _ = als_model["model"].recommend(
+            userid=user_idx,
+            user_items=als_model["user_item_csr"][user_idx],
+            N=k,
+            filter_already_liked_items=True,
+        )
+    except Exception:
+        return []
+    idx_to_item = als_model["idx_to_item"]
+    seen = set(user_items)
+    items = [idx_to_item[item_idx] for item_idx in recs if item_idx in idx_to_item]
+    return [item for item in items if item not in seen][:k]
+
+
+def load_interactions(path: Path) -> pd.DataFrame:
+    if not path.exists():
+        return pd.DataFrame(columns=["user_id", "item_id", "interaction"])
+    return pd.read_parquet(path)
+
+
+def recommend_for_user(
+    user_id: str,
+    k: int,
+    popularity_path: Path,
+    item_item_path: Path,
+    interactions_path: Path,
+    als_path: Path | None = None,
+) -> dict:
+    popularity_model = load_pickle(popularity_path)
+    item_item_model = load_pickle(item_item_path)
+    als_model = load_pickle(als_path) if als_path and als_path.exists() else None
+    interactions = load_interactions(interactions_path)
+
+    user_history = (
+        interactions[interactions["user_id"].astype(str) == user_id]["item_id"]
+        .astype(str)
+        .tolist()
+    )
+    seen = set(user_history)
+
+    if not user_history:
+        rec_items = recommend_popularity(popularity_model, set(), k)
+        return {
+            "user_id": user_id,
+            "model": "popularity",
+            "personalized": False,
+            "recommendations": [
+                {"item_id": item_id, "score": float(popularity_model["scores"].get(item_id, 0.0))}
+                for item_id in rec_items
+            ],
+        }
+
+    rec_items = recommend_item_item(item_item_model, user_history, k)
+    model_name = "item_item"
+    personalized = True
+
+    if not rec_items and als_model is not None:
+        rec_items = recommend_als(als_model, user_id, user_history, k)
+        model_name = "als"
+
+    if not rec_items:
+        rec_items = recommend_popularity(popularity_model, seen, k)
+        model_name = "popularity"
+        personalized = False
+
+    return {
+        "user_id": user_id,
+        "model": model_name,
+        "personalized": personalized,
+        "recommendations": [
+            {"item_id": item_id, "score": float(index + 1)}
+            for index, item_id in enumerate(rec_items)
+        ],
+    }

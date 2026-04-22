@@ -1,0 +1,2 @@
+window_start,window_end,responses,proxy_success_rate,healthy_response_rate,personalized_rate,latency_ms_p95,error_rate
+2026-04-17 18:27:22.714432001+00:00,2026-04-19 18:46:29.399155855+00:00,6,0.8333333333333334,0.8333333333333334,0.5,15381.0,0.16666666666666666

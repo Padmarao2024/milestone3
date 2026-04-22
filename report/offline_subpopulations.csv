@@ -1,0 +1,7 @@
+model,subpopulation,hr@10,ndcg@10,num_users
+als,hot,0.0,0.0,2
+als,warm,1.0,0.5,1
+item_item,hot,0.0,0.0,2
+item_item,warm,1.0,0.6309297535714575,1
+popularity,hot,0.0,0.0,2
+popularity,warm,1.0,0.5,1

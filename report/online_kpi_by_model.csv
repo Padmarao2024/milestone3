@@ -1,0 +1,4 @@
+model,responses,proxy_success_rate,personalized_rate
+error,1,0.0,0.0
+item_item,3,1.0,1.0
+popularity,2,1.0,0.0

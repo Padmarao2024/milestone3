@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.DS_Store
+.coverage
+.env
+.venv/
+venv/
+*.pem
+*.cert
+*.key
+configs/*.env
+!configs/*.example.env
+data/
+artifacts/
+models/**/model.pkl
+models/**/metadata.json

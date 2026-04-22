@@ -1,0 +1,28 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-8.3.5, pluggy-1.6.0
+rootdir: /Users/madhusudhanpoduturu/Documents/recommender-project
+configfile: pytest.ini
+testpaths: tests
+plugins: cov-5.0.0, typeguard-4.5.1, anyio-4.13.0
+collected 10 items
+
+tests/test_config.py .                                                   [ 10%]
+tests/test_eval.py ...                                                   [ 40%]
+tests/test_quality.py ....                                               [ 80%]
+tests/test_serve.py .                                                    [ 90%]
+tests/test_transform.py .                                                [100%]
+
+---------- coverage: platform darwin, python 3.14.3-final-0 ----------
+Name                    Stmts   Miss  Cover   Missing
+-----------------------------------------------------
+pipeline/config.py         72      6    92%   57, 59-60, 64, 66, 95
+pipeline/eval.py          135     37    73%   31, 39-41, 72-76, 119, 126, 138, 188-195, 213-237, 246-256, 307
+pipeline/quality.py        77     12    84%   90-96, 105-106, 109-113, 143, 150
+pipeline/serve.py          58     24    59%   23, 33-48, 53, 89-102
+pipeline/transform.py      49     20    59%   9-13, 18, 21, 48, 59-74
+-----------------------------------------------------
+TOTAL                     391     99    75%
+
+Required test coverage of 70% reached. Total coverage: 74.68%
+
+============================== 10 passed in 0.43s ==============================

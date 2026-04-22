@@ -1,0 +1,5 @@
+check,statistic,threshold,drift_detected
+item_distribution_tvd,0.4464285714285714,0.2,True
+user_activity_tvd,0.6666666666666666,0.2,True
+unique_users_delta_pct,0.5,0.2,True
+unique_items_delta_pct,0.3333333333333333,0.2,True
