@@ -36,7 +36,7 @@ jobs:
             --cov-fail-under=70
 
   build-and-push:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     needs: test-and-quality
     runs-on: ubuntu-latest
     outputs:
@@ -60,20 +60,19 @@ jobs:
             docker.io/${{ secrets.DOCKERHUB_USERNAME }}/recommender-api:${{ github.sha }}
             docker.io/${{ secrets.DOCKERHUB_USERNAME }}/recommender-api:latest
 
-  deploy-cloud-run:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  deploy-azure-container-apps:
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     needs: build-and-push
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
-      - uses: google-github-actions/auth@v2
+      - uses: azure/login@v2
         with:
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-      - uses: google-github-actions/deploy-cloudrun@v2
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - uses: azure/CLI@v2
         with:
-          service: ${{ secrets.CLOUD_RUN_SERVICE }}
-          region: ${{ secrets.CLOUD_RUN_REGION }}
-          image: ${{ needs.build-and-push.outputs.image_ref }}
+          inlineScript: |
+            az extension add --name containerapp --upgrade
+            az containerapp update \
+              --name "${{ secrets.AZURE_CONTAINER_APP_NAME }}" \
+              --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
+              --image "${{ needs.build-and-push.outputs.image_ref }}"
