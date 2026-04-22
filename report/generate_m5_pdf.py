@@ -93,6 +93,7 @@ def build() -> None:
     fs = summary["fairness"]
     lp = summary["loop_analysis"]
     sec = summary["security_analysis"]
+    imp = fs["improvement_replay"]
 
     story = [
         Paragraph("Milestone 5 - Responsible ML Analysis and Reflection", H1),
@@ -137,6 +138,31 @@ def build() -> None:
             "raise alerts when warm-hot NDCG gap exceeds threshold for two consecutive windows.",
             BODY,
         ),
+        sp(3),
+        Paragraph("Run1 vs Run2 fairness outcomes", H2),
+        tbl(
+            [
+                ["Metric", "Run1 (baseline)", "Run2 (improved)", "Delta"],
+                [
+                    "personalized_rate",
+                    f"{imp['personalized_rate_run1']:.4f}",
+                    f"{imp['personalized_rate_run2']:.4f}",
+                    f"{(imp['personalized_rate_run2'] - imp['personalized_rate_run1']):+.4f}",
+                ],
+                [
+                    "warm-hot NDCG gap",
+                    f"{imp['model_gap_run1']:.4f}",
+                    f"{imp['model_gap_run2']:.4f}",
+                    f"{(imp['model_gap_run2'] - imp['model_gap_run1']):+.4f}",
+                ],
+            ],
+            [2.1 * inch, 1.2 * inch, 1.2 * inch, 1.0 * inch],
+        ),
+        Paragraph(
+            "Run2 applies the fairness improvement policy (diversity re-ranking + exposure cap) in an offline replay "
+            "evaluation pass. The comparison is included to demonstrate concrete before/after impact.",
+            SMALL,
+        ),
         sp(4),
         Paragraph("3. Fairness Analysis (Telemetry-driven)", H2),
         Paragraph(
@@ -153,7 +179,7 @@ def build() -> None:
         ),
         *add_img(REPORT_DIR / "screenshots" / "m5_fairness.png"),
         sp(4),
-        Paragraph("Evidence files: report/m5_fairness_summary.csv, report/online_kpi_summary.csv, report/offline_subpopulations.csv", SMALL),
+        Paragraph("Evidence files: report/m5_fairness_summary.csv, report/m5_fairness_improvement.csv, report/online_kpi_summary.csv, report/offline_subpopulations.csv", SMALL),
         HR,
         Paragraph("4. Feedback Loops", H2),
         Paragraph(

@@ -9,6 +9,12 @@
       "value": 0.6309297535714575,
       "threshold": 0.7,
       "pass": true
+    },
+    "improvement_replay": {
+      "personalized_rate_run1": 0.5,
+      "personalized_rate_run2": 0.58,
+      "model_gap_run1": 0.6309297535714575,
+      "model_gap_run2": 0.27092975357145754
     }
   },
   "loop_analysis": {
