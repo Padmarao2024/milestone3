@@ -56,6 +56,7 @@ jobs:
           file: api/Dockerfile
           platforms: linux/amd64
           push: true
+          no-cache: true
           tags: |
             docker.io/${{ secrets.DOCKERHUB_USERNAME }}/recommender-api:${{ github.sha }}
             docker.io/${{ secrets.DOCKERHUB_USERNAME }}/recommender-api:latest
