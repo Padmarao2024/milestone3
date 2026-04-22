@@ -59,13 +59,16 @@ def tbl(data, col_widths=None, header_bg=colors.HexColor("#2c3e50")):
     return t
 
 
-def maybe_image(path: str, width=6.5 * inch, height=None) -> list:
+def maybe_image(path: str, width=6.0 * inch, max_height=3.0 * inch) -> list:
     p = Path(path)
     if p.exists():
-        kwargs = {"width": width}
-        if height:
-            kwargs["height"] = height
-        return [Image(str(p), **kwargs), sp(4)]
+        from PIL import Image as PILImage
+        with PILImage.open(str(p)) as im:
+            w_px, h_px = im.size
+        aspect = h_px / w_px
+        h = min(width * aspect, max_height)
+        w = h / aspect
+        return [Image(str(p), width=w, height=h), sp(4)]
     return [Paragraph(f"[screenshot placeholder: {p.name}]", CODE), sp(4)]
 
 
