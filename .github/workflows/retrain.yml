@@ -33,7 +33,26 @@ jobs:
           pip install pandas pyarrow joblib scipy implicit numpy scikit-learn
 
       - name: Generate synthetic training data (CI substitute for real data)
-        run: python training/prepare_data.py
+        run: |
+          python - <<'PYEOF'
+          import pathlib, random, pandas as pd
+          random.seed(42)
+          users  = [f"u{i}" for i in range(50)]
+          items  = [f"item_{i}" for i in range(30)]
+          rows   = [{"user_id": random.choice(users),
+                     "item_id": random.choice(items),
+                     "interaction": float(random.randint(1, 5)),
+                     "timestamp": f"2026-04-{random.randint(1,22):02d}T00:00:00Z",
+                     "event_type": "watch"}
+                    for _ in range(800)]
+          df = pd.DataFrame(rows)
+          proc = pathlib.Path("data/processed")
+          proc.mkdir(parents=True, exist_ok=True)
+          df.to_parquet(proc / "interactions.parquet", index=False)
+          df[["user_id","item_id","timestamp"]].to_parquet(proc / "watch.parquet", index=False)
+          pd.DataFrame(columns=["user_id","item_id","timestamp","interaction","event_type"]).to_parquet(proc / "rate.parquet", index=False)
+          print(f"Generated {len(df)} synthetic interactions for {df['user_id'].nunique()} users and {df['item_id'].nunique()} items")
+          PYEOF
 
       - name: Train models
         run: |

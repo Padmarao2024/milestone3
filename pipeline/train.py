@@ -52,6 +52,11 @@ def train_popularity_model(interactions: pd.DataFrame, model_dir: Path) -> dict:
 
 def train_item_item_model(interactions: pd.DataFrame, model_dir: Path) -> dict:
     start = time.perf_counter()
+    if interactions.empty:
+        model = {"model_name": "item_item", "similarity": pd.DataFrame()}
+        metadata = {"model_name": "item_item", "train_seconds": 0.0, "num_interactions": 0}
+        save_model_bundle(model_dir, model, metadata)
+        return metadata
     user_item = pd.crosstab(interactions["user_id"], interactions["item_id"])
     similarity = user_item.T.dot(user_item)
     for column in similarity.columns:
