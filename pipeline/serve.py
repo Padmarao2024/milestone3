@@ -11,10 +11,13 @@ def load_pickle(path: str | Path):
 
 
 def recommend_popularity(pop_model: dict, seen_items: set[str], k: int) -> list[str]:
-    return [item for item in pop_model["top_items"] if item not in seen_items][:k]
+    top_items = pop_model.get("top_items", []) if isinstance(pop_model, dict) else []
+    return [item for item in top_items if item not in seen_items][:k]
 
 
 def recommend_item_item(item_model: dict, user_items: list[str], k: int) -> list[str]:
+    if not isinstance(item_model, dict) or "similarity" not in item_model:
+        return []
     similarity = item_model["similarity"]
     seen = set(user_items)
     scores: dict[str, float] = {}
@@ -62,8 +65,15 @@ def recommend_for_user(
     interactions_path: Path,
     als_path: Path | None = None,
 ) -> dict:
-    popularity_model = load_pickle(popularity_path)
-    item_item_model = load_pickle(item_item_path)
+    try:
+        popularity_model = load_pickle(popularity_path)
+    except Exception:
+        popularity_model = {"top_items": [], "scores": {}}
+
+    try:
+        item_item_model = load_pickle(item_item_path)
+    except Exception:
+        item_item_model = None
     # ALS artifacts may require optional runtime deps (e.g., implicit).
     # If unavailable, continue with item-item/popularity instead of failing the API.
     als_model = None
@@ -88,7 +98,14 @@ def recommend_for_user(
             "model": "popularity",
             "personalized": False,
             "recommendations": [
-                {"item_id": item_id, "score": float(popularity_model["scores"].get(item_id, 0.0))}
+                {
+                    "item_id": item_id,
+                    "score": float(
+                        popularity_model.get("scores", {}).get(item_id, 0.0)
+                        if isinstance(popularity_model, dict)
+                        else 0.0
+                    ),
+                }
                 for item_id in rec_items
             ],
         }
