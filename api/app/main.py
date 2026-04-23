@@ -131,7 +131,7 @@ def recommend(user_id: str, k: int = Query(default=10, ge=1, le=100)):
     except Exception as exc:
         ERROR_COUNTER.labels(model=model_name).inc()
         logger.error(json.dumps({"request_id": request_id, "error": str(exc)}))
-        raise HTTPException(status_code=500, detail="recommendation failed") from exc
+        raise HTTPException(status_code=500, detail=f"recommendation failed: {exc}") from exc
     latency = time.perf_counter() - start
 
     # A/B hit = non-empty recommendations
