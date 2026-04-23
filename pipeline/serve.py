@@ -64,7 +64,14 @@ def recommend_for_user(
 ) -> dict:
     popularity_model = load_pickle(popularity_path)
     item_item_model = load_pickle(item_item_path)
-    als_model = load_pickle(als_path) if als_path and als_path.exists() else None
+    # ALS artifacts may require optional runtime deps (e.g., implicit).
+    # If unavailable, continue with item-item/popularity instead of failing the API.
+    als_model = None
+    if als_path and als_path.exists():
+        try:
+            als_model = load_pickle(als_path)
+        except Exception:
+            als_model = None
     interactions = load_interactions(interactions_path)
 
     user_history = (
