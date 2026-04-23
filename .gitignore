@@ -12,5 +12,8 @@ configs/*.env
 !configs/*.example.env
 data/
 artifacts/
-models/**/model.pkl
-models/**/metadata.json
+# Ignore all models except those in popularity for CI/CD placeholder
+models/*/model.pkl
+models/*/metadata.json
+!models/popularity/model.pkl
+!models/popularity/metadata.json
