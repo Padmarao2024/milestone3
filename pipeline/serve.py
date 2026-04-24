@@ -52,9 +52,13 @@ def recommend_als(als_model: dict, user_id: str, user_items: list[str], k: int) 
 
 
 def load_interactions(path: Path) -> pd.DataFrame:
+    print(f"[DEBUG] Looking for interactions file at: {path}")
     if not path.exists():
+        print(f"[DEBUG] File not found: {path}")
         return pd.DataFrame(columns=["user_id", "item_id", "interaction"])
-    return pd.read_parquet(path)
+    df = pd.read_parquet(path)
+    print(f"[DEBUG] Loaded interactions: shape={df.shape}")
+    return df
 
 
 def recommend_for_user(
@@ -82,6 +86,7 @@ def recommend_for_user(
             als_model = load_pickle(als_path)
         except Exception:
             als_model = None
+
     interactions = load_interactions(interactions_path)
 
     user_history = (
@@ -89,6 +94,7 @@ def recommend_for_user(
         .astype(str)
         .tolist()
     )
+    print(f"[DEBUG] user_id={user_id}, user_history={user_history}")
     seen = set(user_history)
 
     if not user_history:
