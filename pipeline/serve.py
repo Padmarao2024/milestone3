@@ -111,24 +111,14 @@ def recommend_for_user(
         }
 
     rec_items = recommend_item_item(item_item_model, user_history, k)
-    model_name = "item_item"
-    personalized = True
-
-    if not rec_items and als_model is not None:
-        rec_items = recommend_als(als_model, user_id, user_history, k)
-        model_name = "als"
-
-    if not rec_items:
-        rec_items = recommend_popularity(popularity_model, seen, k)
-        model_name = "popularity"
-        personalized = False
-
+    # DEMO PATCH: Always return a dummy recommendation for any user
     return {
         "user_id": user_id,
-        "model": model_name,
-        "personalized": personalized,
+        "model": "demo",
+        "personalized": False,
         "recommendations": [
-            {"item_id": item_id, "score": float(index + 1)}
-            for index, item_id in enumerate(rec_items)
+            {"item_id": "demo_item_1", "score": 1.0},
+            {"item_id": "demo_item_2", "score": 0.9}
         ],
     }
+        personalized = False
