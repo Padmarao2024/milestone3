@@ -121,4 +121,4 @@ def recommend_for_user(
             {"item_id": "demo_item_2", "score": 0.9}
         ],
     }
-        personalized = False
+personalized = False
