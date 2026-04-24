@@ -1,3 +1,0 @@
-metric,run1_baseline,run2_improved,delta,target_direction
-personalized_rate,0.5,0.58,0.08,higher_is_better
-warm_hot_ndcg_gap_item_item,0.6309,0.2709,-0.36,lower_is_better

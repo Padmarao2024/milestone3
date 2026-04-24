@@ -1,3 +1,0 @@
-requirement,metric,value,threshold,pass,source
-system_personalized_rate,personalized_rate,0.5,0.4,True,report/online_kpi_summary.csv
-model_warm_hot_ndcg_gap_item_item,warm_ndcg_minus_hot_ndcg,0.6309,0.7,True,report/offline_subpopulations.csv

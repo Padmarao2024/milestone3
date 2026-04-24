@@ -10,7 +10,7 @@ venv/
 *.key
 configs/*.env
 !configs/*.example.env
-data/
+# data/
 artifacts/
 # Ignore all models except those in popularity for CI/CD placeholder
 models/*/model.pkl

@@ -105,12 +105,12 @@ Endpoints:
 GitHub Actions workflows:
 
 - `.github/workflows/probe.yml`: scheduled probe publisher
-- `.github/workflows/ci-cd.yml`: lint, tests, coverage, image build/push, Cloud Run deploy on `main`
+- `.github/workflows/ci-cd.yml`: lint, tests, coverage, image build/push, Azure Container Apps deploy on `main`
 
 Secrets strategy for CI/CD:
 
 - Docker Hub: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`
-- Cloud Run: `GCP_WORKLOAD_IDENTITY_PROVIDER`, `GCP_SERVICE_ACCOUNT`, `CLOUD_RUN_SERVICE`, `CLOUD_RUN_REGION`
+- Azure Container Apps: `AZURE_CREDENTIALS`, `AZURE_CONTAINER_APP_NAME`, `AZURE_RESOURCE_GROUP`
 
 ## Submission Artifacts
 

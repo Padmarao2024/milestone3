@@ -1,4 +1,0 @@
-check,statistic,threshold,detected,source
-popularity_echo_item_tvd,0.4464,0.2,True,report/drift_report.csv
-rating_spam_user_contribution_share,0.4,0.15,True,data/processed/interactions.parquet
-rating_spam_num_suspicious_users,3.0,0.0,True,data/processed/interactions.parquet
